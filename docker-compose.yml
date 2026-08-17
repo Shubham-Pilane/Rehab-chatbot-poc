@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Database Service with pgvector pre-installed
+  postgres-db:
+    image: pgvector/pgvector:pg15
+    container_name: rpm_postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      # Create multiple databases on startup
+      # We can initialize backup_2_july and chatbot_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Chatbot Application Service
+  chatbot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rehab_chatbot_app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - JWT_SECRET=rehab_chatbot_jwt_secret_dev_key_2026
+      - JWT_EXPIRES_IN=7d
+      
+      # DB Connection configurations pointing to internal docker network services
+      - MAIN_DB_HOST=postgres-db
+      - MAIN_DB_PORT=5432
+      - MAIN_DB_NAME=backup_2_july
+      - MAIN_DB_USER=postgres
+      - MAIN_DB_PASSWORD=postgres
+      
+      - CHATBOT_DB_HOST=postgres-db
+      - CHATBOT_DB_PORT=5432
+      - CHATBOT_DB_NAME=chatbot_db
+      - CHATBOT_DB_USER=postgres
+      - CHATBOT_DB_PASSWORD=postgres
+      
+      # Change this to your live API Key
+      - GEMINI_API_KEY=dummy_key_replace_me
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+    driver: local

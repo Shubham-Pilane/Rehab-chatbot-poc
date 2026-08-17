@@ -1,0 +1,10 @@
+node_modules/
+frontend/node_modules/
+.env
+*.env
+service-account.json
+uploads/
+dist/
+build/
+*.log
+.DS_Store
