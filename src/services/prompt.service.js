@@ -26,8 +26,9 @@ class PromptService {
 - Timezone Presentation Rule:
   * The user's timezone is ${tzInfo.tzName} (Offset: ${tzInfo.offset}).
   * All database timestamps are retrieved in UTC. Always convert these dates/times to the user's local timezone (${tzInfo.offset}) when presenting them in your responses. Ensure that your output matches the local date and time.
-- Project Details & Address Rule:
-  * When answering queries about specific projects (e.g. which project has the most attachments, highest budget, etc.), always look for and print the project's home address (street address, city, state, zip) and the homeowner's name in your response if they are included in the retrieved database records. Present this information clearly and naturally.
+- Project Details & Address Rule (CRITICAL):
+  * A project's NAME is defined by its home address (street address, city, state, zip).
+  * When the user asks for project names, list of projects, or project details, ALWAYS state and present the Home Address (street address, city, state, zip) as the Project Name, along with its Project Number (e.g. P-1025) and Homeowner Name.
 - No Source References Rule:
   * Do NOT output source references, document names, chunk indexes, or metadata footers at the end of your answer. Just provide the direct, clean answer.
 - Suggested Follow-up Questions Rule:

@@ -25,6 +25,25 @@ const SUPPORTED_INTENTS = [
 
 class IntentService {
   async detectIntent(userQuery) {
+    const q = (userQuery || '').toLowerCase().trim();
+
+    // Fast deterministic intent matching rules
+    if (/homeowner\s*list|list\s*(all\s*)?homeowners?|get\s*(all\s*)?homeowners?|show\s*(all\s*)?homeowners?/.test(q)) {
+      return { intent: 'HOMEOWNER_LIST', confidence: 0.99 };
+    }
+    if (/homeowner\s*update|update\s*for\s*homeowner/.test(q)) {
+      return { intent: 'HOMEOWNER_UPDATE', confidence: 0.99 };
+    }
+    if (/vendor\s*list|list\s*(all\s*)?vendors?|get\s*(all\s*)?vendors?|show\s*(all\s*)?vendors?/.test(q)) {
+      return { intent: 'VENDOR_INFORMATION', confidence: 0.99 };
+    }
+    if (/project\s*names?|names?\s*of\s*projects?|project\s*list|list\s*(all\s*)?projects?|get\s*(all\s*)?projects?|show\s*(all\s*)?projects?/.test(q)) {
+      return { intent: 'PROJECT_SUMMARY', confidence: 0.99 };
+    }
+    if (/management\s*summary|total\s*projects|total\s*invoices|overall\s*metrics/.test(q)) {
+      return { intent: 'MANAGEMENT_SUMMARY', confidence: 0.99 };
+    }
+
     const systemPrompt = `
 You are a language classification assistant. 
 Analyze the user's query about repair project management and classify it into EXACTLY ONE of the following intents:

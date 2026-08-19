@@ -43,7 +43,8 @@ class HomeownerRepository {
 
   async getAllHomeowners() {
     return await MainUser.findAll({
-      attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
+      attributes: ['id', 'firstName', 'lastName', 'email', 'phone'],
+      limit: 25
     });
   }
 }

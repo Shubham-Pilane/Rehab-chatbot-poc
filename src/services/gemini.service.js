@@ -1,3 +1,10 @@
+if (!global.Headers || !global.fetch) {
+  const fetch = require('node-fetch');
+  global.fetch = fetch;
+  global.Headers = fetch.Headers;
+  global.Request = fetch.Request;
+  global.Response = fetch.Response;
+}
 const { VertexAI } = require('@google-cloud/vertexai');
 const winston = require('../utils/logger'); // We will define this logger soon
 
@@ -178,23 +185,54 @@ class GeminiService {
         query = queryLines[0].trim();
       }
     }
+
+    // Dynamic Mock Parser for Business Records
+    if (userPrompt.includes('=== RETRIEVED BUSINESS DATABASE RECORDS ===')) {
+      try {
+        const dbMatch = userPrompt.match(/=== RETRIEVED BUSINESS DATABASE RECORDS ===[\s\S]*?\n(\[[\s\S]*?\]|\{[\s\S]*?\})\n\n===/);
+        if (dbMatch && dbMatch[1]) {
+          const records = JSON.parse(dbMatch[1]);
+          if (Array.isArray(records) && records.length > 0) {
+            // Homeowners list formatting
+            if (records[0].firstName !== undefined || records[0].first_name !== undefined) {
+              const formattedList = records.map(h => `- ${h.firstName || h.first_name || ''} ${h.lastName || h.last_name || ''} (${h.email || 'No Email'})`).join('\n');
+              return `Here is a list of registered homeowners from our database:\n\n${formattedList}\n\n[SUGGESTED_FOLLOW_UPS: How many total homeowners? | Search for a homeowner? | View project details?]`;
+            }
+            // Projects list formatting (Project Name = Home Address)
+            if (records[0].projectNumber !== undefined || records[0].project_number !== undefined || records[0].home !== undefined) {
+              const formattedList = records.map(p => {
+                const addr = p.home && p.home.address 
+                  ? `${p.home.address.street || p.home.address.street_address || ''}, ${p.home.address.city || ''}, ${p.home.address.state || ''} ${p.home.address.zip || ''}`
+                  : `Project #${p.projectNumber || p.project_number}`;
+                const homeownerStr = p.home && p.home.homeowner ? ` (Homeowner: ${p.home.homeowner.firstName} ${p.home.homeowner.lastName})` : '';
+                return `- **Project Name (Address)**: ${addr}${homeownerStr} | **Project #**: ${p.projectNumber || p.project_number || 'N/A'} | **Status**: ${p.status || 'Active'}`;
+              }).join('\n');
+              return `Here are the project names (represented by home addresses):\n\n${formattedList}\n\n[SUGGESTED_FOLLOW_UPS: Show project status? | What is the total budget? | Check tasks?]`;
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error parsing mock DB records:', err.message);
+      }
+    }
+
     const prompt = query.toLowerCase();
     if (prompt.includes('status')) {
-      return 'According to the supplied records, Project P-1025 is currently Delayed. There is an active milestone "Inspections" that is overdue by 5 days. General plumbing tasks are in progress and are currently at 60% completion.';
+      return 'According to the supplied records, Project P-1025 is currently Delayed. There is an active milestone "Inspections" that is overdue by 5 days. General plumbing tasks are in progress and are currently at 60% completion.\n\n[SUGGESTED_FOLLOW_UPS: Why is it delayed? | Show total budget? | View vendor details?]';
     }
     if (prompt.includes('invoice')) {
-      return 'Based on the context, there are 2 pending invoices. Invoice INV-9021 for $4,500.00 is awaiting approval from Finance. Invoice INV-8843 for $1,200.00 belongs to Vendor ABC and is pending.';
+      return 'Based on the context, there are 2 pending invoices. Invoice INV-9021 for $4,500.00 is awaiting approval from Finance. Invoice INV-8843 for $1,200.00 belongs to Vendor ABC and is pending.\n\n[SUGGESTED_FOLLOW_UPS: Approve invoice? | Show vendor details? | Check budget?]';
     }
     if (prompt.includes('vendor')) {
-      return 'The assigned vendors for the project are "ABC Flooring" (status: active, license expires on 2026-09-15) and "XYZ Plumbing" (status: active). ABC Flooring has 1 pending invoice for $3,200.00.';
+      return 'The assigned vendors for the project are "ABC Flooring" (status: active, license expires on 2026-09-15) and "XYZ Plumbing" (status: active). ABC Flooring has 1 pending invoice for $3,200.00.\n\n[SUGGESTED_FOLLOW_UPS: Show vendor license? | List pending invoices? | Check project status?]';
     }
     if (prompt.includes('budget')) {
-      return 'Project budget report: The overall budget is $50,000.00. Total actual spent to date is $54,500.00. The project is over budget by $4,500.00 (9.0% cost variance) due to unexpected site remediation requirements.';
+      return 'Project budget report: The overall budget is $50,000.00. Total actual spent to date is $54,500.00. The project is over budget by $4,500.00 (9.0% cost variance) due to unexpected site remediation requirements.\n\n[SUGGESTED_FOLLOW_UPS: Show invoice breakdown? | List project tasks? | View vendor costs?]';
     }
     if (prompt.includes('homeowner')) {
-      return 'Homeowner Update (Project P-1025):\nDear Mr. Smith, we have completed the structural reinforcement work. Plumbing routing is underway. Inspections are scheduled for next week. Current expected completion is 2026-08-30.';
+      return 'Homeowner Update (Project P-1025):\nDear Mr. Smith, we have completed the structural reinforcement work. Plumbing routing is underway. Inspections are scheduled for next week. Current expected completion is 2026-08-30.\n\n[SUGGESTED_FOLLOW_UPS: Send SMS update? | View homeowner address? | Check project tasks?]';
     }
-    return `Hello! I am your AI Repair Project Management Assistant. You asked: "${query}". Since the Gemini API is in Mock Mode, I am returning this simulated message. Please configure a valid GOOGLE_APPLICATION_CREDENTIALS and GCP_PROJECT_ID in the .env file to enable live AI responses.`;
+    return `Hello! I am your AI Repair Project Management Assistant. You asked: "${query}".\n\n[SUGGESTED_FOLLOW_UPS: List all projects? | Show homeowner list? | Check vendor status?]`;
   }
 
   getMockJsonResponse(schemaName, userPrompt) {
@@ -203,8 +241,11 @@ class GeminiService {
     if (schemaName === 'intent') {
       let intent = 'UNKNOWN';
       let confidence = 0.50;
-      
-      if (prompt.includes('status') && prompt.includes('project')) {
+
+      if (prompt.includes('homeowner') && (prompt.includes('list') || prompt.includes('all') || prompt.includes('show') || prompt.includes('get'))) {
+        intent = 'HOMEOWNER_LIST';
+        confidence = 0.99;
+      } else if (prompt.includes('status') && prompt.includes('project')) {
         intent = 'PROJECT_STATUS';
         confidence = 0.98;
       } else if (prompt.includes('delay') && prompt.includes('project')) {

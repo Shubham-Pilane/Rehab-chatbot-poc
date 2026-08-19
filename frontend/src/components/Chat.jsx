@@ -16,16 +16,31 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { api } from '../services/api';
 
+const formatMessageTimestamp = (timestamp) => {
+  const dateObj = timestamp ? new Date(timestamp) : new Date();
+  if (isNaN(dateObj.getTime())) {
+    const now = new Date();
+    const m = now.getMonth() + 1;
+    const d = now.getDate();
+    let h = now.getHours();
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return `${m}/${d} ${h}:${min} ${ampm}`;
+  }
+  const m = dateObj.getMonth() + 1;
+  const d = dateObj.getDate();
+  let h = dateObj.getHours();
+  const min = String(dateObj.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${m}/${d} ${h}:${min} ${ampm}`;
+};
+
 const formatSessionTitle = (session) => {
-  if (!session) return 'Chat';
-  
-  if (session.title && 
-      !['New Conversation', 'New Chat'].includes(session.title.trim()) && 
-      !/^Chat\s+\d+$/i.test(session.title.trim()) &&
-      !/^Chat\s+-\s+/i.test(session.title.trim())) {
+  if (session.title && !session.title.startsWith('New Chat') && !session.title.startsWith('Chat -')) {
     return session.title;
   }
-
   const dateObj = session.createdAt ? new Date(session.createdAt) : new Date();
   const dateFormatted = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -181,17 +196,13 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
   const loadSessions = async () => {
     try {
       const data = await api.getSessions();
-      setSessions(data);
-      // Automatically open a fresh new chat session with Date & Time title by default
-      try {
+      if (data && data.length > 0) {
+        setSessions(data);
+        setActiveSessionId(data[0].id);
+      } else {
         const newSession = await api.createSession(getNewSessionTitle());
-        setSessions([newSession, ...data]);
+        setSessions([newSession]);
         setActiveSessionId(newSession.id);
-      } catch (err) {
-        console.error('Error auto-creating session:', err);
-        if (data.length > 0) {
-          setActiveSessionId(data[0].id);
-        }
       }
     } catch (err) {
       console.error('Error fetching sessions:', err);
@@ -201,7 +212,9 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
   const loadSessionMessages = async (id) => {
     try {
       const data = await api.getSession(id);
-      setMessages(data.messages || []);
+      const msgs = data.messages || [];
+      setMessages(msgs);
+      setVisibleCount(Math.max(20, msgs.length));
     } catch (err) {
       console.error('Error loading messages:', err);
     }
@@ -231,6 +244,49 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
     }
   };
 
+  const streamAssistantResponse = (data, userText) => {
+    return new Promise((resolve) => {
+      const fullText = data.message?.content || data.response || '';
+      if (!fullText) {
+        loadSessionMessages(activeSessionId);
+        resolve();
+        return;
+      }
+
+      const words = fullText.split(' ');
+      let currentWordIndex = 0;
+      const assistantMsgId = data.message?.id || `temp-assistant-${Date.now()}`;
+      const step = words.length > 50 ? 3 : (words.length > 20 ? 2 : 1);
+
+      // Set user message & empty assistant placeholder
+      setMessages(prev => [
+        ...prev.filter(m => m.id !== 'temp-user'),
+        { id: `user-${Date.now()}`, sender: 'user', content: userText },
+        { id: assistantMsgId, sender: 'assistant', content: '' }
+      ]);
+
+      const timer = setInterval(() => {
+        currentWordIndex += step;
+        const currentText = words.slice(0, Math.min(currentWordIndex, words.length)).join(' ');
+
+        setMessages(prev => prev.map(msg => 
+          msg.id === assistantMsgId ? { ...msg, content: currentText } : msg
+        ));
+
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        }
+
+        if (currentWordIndex >= words.length) {
+          clearInterval(timer);
+          setSuggestedFollowUps(data.suggestedFollowUps || []);
+          loadSessionMessages(activeSessionId);
+          resolve();
+        }
+      }, 10);
+    });
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!input.trim() || !activeSessionId || loading) return;
@@ -250,10 +306,9 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
       setLatestIntent(data.intent);
       setLatestEntities(data.entities);
       setLatestLatency(data.latencyMs);
-      setSuggestedFollowUps(data.suggestedFollowUps || []);
 
-      // Replace optimistic message and add response
-      loadSessionMessages(activeSessionId);
+      setLoading(false);
+      await streamAssistantResponse(data, userText);
     } catch (err) {
       console.error('Send message error:', err);
       setMessages(prev => [...prev, { 
@@ -261,7 +316,6 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
         sender: 'assistant', 
         content: `Error: ${err.message || 'Failed to generate response. Please check backend.'}` 
       }]);
-    } finally {
       setLoading(false);
     }
   };
@@ -282,10 +336,9 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
       setLatestIntent(data.intent);
       setLatestEntities(data.entities);
       setLatestLatency(data.latencyMs);
-      setSuggestedFollowUps(data.suggestedFollowUps || []);
 
-      // Replace optimistic message and add response
-      loadSessionMessages(activeSessionId);
+      setLoading(false);
+      await streamAssistantResponse(data, question);
     } catch (err) {
       console.error('Send message error:', err);
       setMessages(prev => [...prev, { 
@@ -293,7 +346,6 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
         sender: 'assistant', 
         content: `Error: ${err.message || 'Failed to generate response.'}` 
       }]);
-    } finally {
       setLoading(false);
     }
   };
@@ -564,7 +616,7 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
                   <Avatar sx={{ width: 24, height: 24, fontSize: '11px', bgcolor: msg.sender === 'user' ? 'primary.main' : 'secondary.main' }}>
                     {msg.sender === 'user' ? 'U' : 'AI'}
                   </Avatar>
-                  <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 500 }}>
+                  <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 600 }}>
                     {msg.sender === 'user' ? 'You' : 'Assistant'}
                   </Typography>
                 </Box>
@@ -579,6 +631,19 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
                 >
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     {renderMarkdown(msg.content)}
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0.6, opacity: 0.85 }}>
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          fontSize: '0.65rem', 
+                          color: msg.sender === 'user' ? 'rgba(255,255,255,0.85)' : '#64748b',
+                          fontWeight: 500,
+                          letterSpacing: '0.02em'
+                        }}
+                      >
+                        {formatMessageTimestamp(msg.createdAt || msg.created_at)}
+                      </Typography>
+                    </Box>
                   </Box>
                 </Paper>
 
@@ -598,8 +663,8 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
             {loading && (
               <Box sx={{ display: 'flex', gap: 1.5, alignSelf: 'flex-start', alignItems: 'center' }}>
                 <CircularProgress size={18} color="secondary" />
-                <Typography variant="caption" sx={{ color: '#64748b', fontStyle: 'italic' }}>
-                  AI is analyzing records & files...
+                <Typography variant="caption" sx={{ color: '#64748b', fontStyle: 'italic', fontWeight: 500 }}>
+                  Thinking...
                 </Typography>
               </Box>
             )}

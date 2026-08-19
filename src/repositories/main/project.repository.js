@@ -20,6 +20,23 @@ class ProjectRepository {
     });
   }
 
+  async getAllProjectsWithNames(limit = 25) {
+    return await Project.findAll({
+      attributes: ['id', 'projectNumber', 'status', 'projectState'],
+      include: [
+        {
+          model: Home,
+          as: 'home',
+          include: [
+            { model: Address, as: 'address' },
+            { model: MainUser, as: 'homeowner' }
+          ]
+        }
+      ],
+      limit
+    });
+  }
+
   async getDelayedProjects() {
     // Find projects with status containing 'delayed'
     return await Project.findAll({

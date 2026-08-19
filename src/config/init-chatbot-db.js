@@ -33,7 +33,11 @@ async function initializeDatabases() {
 
     // Sync models (this creates tables if they do not exist)
     console.log('Syncing chatbot models...');
-    await chatbotDbConnection.sync({ alter: true });
+    try {
+      await chatbotDbConnection.sync();
+    } catch (syncErr) {
+      console.warn('⚠️ Warning during chatbotDbConnection.sync:', syncErr.message);
+    }
     console.log('✔ Chatbot models synced.');
 
     if (hasPgvector) {

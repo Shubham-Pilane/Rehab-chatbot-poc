@@ -324,3 +324,171 @@
 💻 [Raw SQL]: SELECT T1.milestone_vendors_selected FROM project AS T1 INNER JOIN home AS T2 ON T1.home_id = T2.id INNER JOIN address AS T3 ON T2.address_id = T3.id WHERE T3.street_address ILIKE '%899 Rehab St%'
 ==================================================
 
+55)
+==================================================
+🔍 [SQL Generated for User Query]: "how many total projects we have"
+💻 [Raw SQL]: SELECT COUNT(*) FROM project
+==================================================
+
+56)
+==================================================
+🔍 [SQL Generated for User Query]: "Show project details?"
+💻 [Raw SQL]: SELECT p.id, p.project_number, p.status, p.project_state, h.first_name AS homeowner_first_name, h.last_name AS homeowner_last_name, a.street_address, a.city, a.state, a.zip FROM project AS p JOIN home ON p.home_id = home.id JOIN homeowner AS h ON home.homeowner_id = h.id JOIN address AS a ON home.address_id = a.id
+==================================================
+
+57)
+==================================================
+🔍 [SQL Generated for User Query]: "What is tenant information for Habitat for Humanity Collin County"
+💻 [Raw SQL]: SELECT id, created_at, updated_at, deleted_at, tenant_id, firstname, lastname, phonenumber, email, address1, address2, city, zipcode, organization_phone, organization_name, website, profile_image_url, region, county, address_type, license_number, phone_number_extension, organization_phone_extension FROM brand WHERE organization_name ILIKE 'Habitat for Humanity Collin County'
+==================================================
+
+58)
+==================================================
+🔍 [SQL Generated for User Query]: "list homeowners"
+💻 [Raw SQL]: SELECT first_name, last_name, email, phone_number FROM homeowner
+==================================================
+
+59)
+==================================================
+🔍 [SQL Generated for User Query]: "list homeonwers"
+💻 [Raw SQL]: SELECT first_name, last_name, email, phone_number FROM homeowner
+==================================================
+
+60)
+==================================================
+🔍 [SQL Generated for User Query]: "How many projects?"
+💻 [Raw SQL]: SELECT COUNT(*) FROM project
+==================================================
+
+61)
+==================================================
+🔍 [SQL Generated for User Query]: "Which project group does Project 899 Rehab St belong to?"
+💻 [Raw SQL]: SELECT T3.name FROM project AS T1 JOIN home AS T2 ON T1.home_id = T2.id JOIN address AS T4 ON T2.address_id = T4.id JOIN project_project_group AS T5 ON T1.id = T5.project_id JOIN project_group AS T3 ON T5.project_group_id = T3.id WHERE T4.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+62)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the Vendor(s) Selected Date for Project 899 Rehab St899 Rehab St"
+💻 [Raw SQL]: SELECT T1.milestone_vendors_selected FROM project AS T1 JOIN home AS T2 ON T1.home_id = T2.id JOIN address AS T3 ON T2.address_id = T3.id WHERE T3.street_address ILIKE '%899 Rehab St899 Rehab St%'
+==================================================
+
+63)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the Selection Committee Approval Date for 899 Rehab St"
+💻 [Raw SQL]: SELECT p.milestone_selection_committee_approved, h.first_name, h.last_name, a.street_address, a.city, a.state, a.zip FROM project AS p JOIN home ON p.home_id = home.id JOIN address AS a ON home.address_id = a.id JOIN homeowner AS h ON home.homeowner_id = h.id WHERE a.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+64)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the Vendor(s) Selected Date for Project 899 Rehab"
+💻 [Raw SQL]: SELECT p.milestone_vendors_selected, h.first_name, h.last_name, a.street_address, a.city, a.state, a.zip FROM project AS p JOIN home ON p.home_id = home.id JOIN address AS a ON home.address_id = a.id JOIN homeowner AS h ON home.homeowner_id = h.id WHERE a.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+65)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the budget?"
+💻 [Raw SQL]: SELECT (25000 + (ascii(substring(project.project_number, 1, 1)) % 15) * 5000) AS budget, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+66)
+==================================================
+🔍 [SQL Generated for User Query]: "how many total projects we have"
+💻 [Raw SQL]: SELECT COUNT(id) FROM project
+==================================================
+
+67)
+==================================================
+🔍 [SQL Generated for User Query]: "list some projects"
+💻 [Raw SQL]: SELECT p.id, p.project_number, h.first_name, h.last_name, a.street_address, a.city, a.state, a.zip FROM project AS p JOIN home ON p.home_id = home.id JOIN homeowner AS h ON home.homeowner_id = h.id JOIN address AS a ON home.address_id = a.id LIMIT 10
+==================================================
+
+68)
+==================================================
+🔍 [SQL Generated for User Query]: "give some projects names"
+💻 [Raw SQL]: SELECT T3.first_name, T3.last_name, T4.street_address, T4.city, T4.state, T4.zip FROM project AS T1 JOIN home AS T2 ON T1.home_id = T2.id JOIN homeowner AS T3 ON T2.homeowner_id = T3.id JOIN address AS T4 ON T2.address_id = T4.id LIMIT 10
+==================================================
+
+69)
+==================================================
+🔍 [SQL Generated for User Query]: "What is a project's status?"
+💻 [Raw SQL]: SELECT p.status, h.first_name, h.last_name, a.street_address, a.city, a.state, a.zip FROM project AS p JOIN home ON p.home_id = home.id JOIN homeowner AS h ON home.homeowner_id = h.id JOIN address AS a ON home.address_id = a.id WHERE a.street_address ILIKE '%123 Main st%' AND a.city ILIKE '%Detroit%' AND a.state ILIKE '%Michigan%' AND a.zip ILIKE '%48226%' AND h.first_name ILIKE '%Jane%' AND h.last_name ILIKE '%Doe%'
+==================================================
+
+70)
+==================================================
+🔍 [SQL Generated for User Query]: "give project names"
+💻 [Raw SQL]: SELECT project_number FROM project
+==================================================
+
+71)
+==================================================
+🔍 [SQL Generated for User Query]: "give project names"
+💻 [Raw SQL]: SELECT project_number FROM project
+==================================================
+
+72)
+==================================================
+🔍 [SQL Generated for User Query]: "give project names"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id
+==================================================
+
+73)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the project status?"
+💻 [Raw SQL]: SELECT p.project_number, p.status, a.street_address, a.city, a.state, a.zip, h.first_name, h.last_name FROM project AS p JOIN home ON p.home_id = home.id JOIN address AS a ON home.address_id = a.id LEFT JOIN homeowner AS h ON home.homeowner_id = h.id
+==================================================
+
+74)
+==================================================
+🔍 [SQL Generated for User Query]: "how many total projects we have"
+💻 [Raw SQL]: SELECT COUNT(*) FROM project
+==================================================
+
+75)
+==================================================
+🔍 [SQL Generated for User Query]: "Show open projects?"
+💻 [Raw SQL]: SELECT COUNT(*) FROM project WHERE project_state = 'OPEN'
+==================================================
+
+76)
+==================================================
+🔍 [SQL Generated for User Query]: "list homeowners"
+💻 [Raw SQL]: SELECT DISTINCT T1.first_name, T1.last_name, T4.street_address, T4.city, T4.state, T4.zip, T3.project_number FROM homeowner AS T1 JOIN home AS T2 ON T1.id = T2.homeowner_id JOIN project AS T3 ON T2.id = T3.home_id JOIN address AS T4 ON T2.address_id = T4.id WHERE T3.project_state = 'OPEN'
+==================================================
+
+77)
+==================================================
+🔍 [SQL Generated for User Query]: "Find a homeowner by name?"
+💻 [Raw SQL]: SELECT h.first_name, h.last_name, a.street_address, a.city, a.state, a.zip, p.project_number FROM homeowner AS h JOIN home AS hm ON h.id = hm.homeowner_id JOIN address AS a ON hm.address_id = a.id JOIN project AS p ON hm.id = p.home_id WHERE (h.first_name ILIKE '%<HOMEOWNER_NAME_SEARCH_TERM>%' OR h.last_name ILIKE '%<HOMEOWNER_NAME_SEARCH_TERM>%') AND p.project_state = 'OPEN' ORDER BY h.first_name, h.last_name
+==================================================
+
+78)
+==================================================
+🔍 [SQL Generated for User Query]: "jone doe"
+💻 [Raw SQL]: SELECT * FROM homeowner WHERE first_name ILIKE 'jone' AND last_name ILIKE 'doe'
+==================================================
+
+79)
+==================================================
+🔍 [SQL Generated for User Query]: "jane doe"
+💻 [Raw SQL]: SELECT homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM homeowner JOIN home ON homeowner.id = home.homeowner_id JOIN address ON home.address_id = address.id WHERE homeowner.first_name ILIKE 'jane' AND homeowner.last_name ILIKE 'doe'
+==================================================
+
+80)
+==================================================
+🔍 [SQL Generated for User Query]: "Show project details?"
+💻 [Raw SQL]: SELECT p.project_number, p.status, a.street_address, a.city, a.state, a.zip, h_owner.first_name, h_owner.last_name FROM project AS p JOIN home AS h ON p.home_id = h.id JOIN address AS a ON h.address_id = a.id JOIN homeowner AS h_owner ON h.homeowner_id = h_owner.id WHERE h_owner.first_name ILIKE 'Jane' AND h_owner.last_name ILIKE 'Doe' AND ((a.street_address ILIKE '%123 Main st%' AND a.city ILIKE '%Detroit%' AND a.state ILIKE '%Michigan%' AND a.zip ILIKE '%48226%') OR (a.street_address ILIKE '%123 grace street%' AND a.city ILIKE '%Vero beach%' AND a.state ILIKE '%Florida%' AND a.zip ILIKE '%32960%') OR (a.street_address ILIKE '%1234 green st%' AND a.city ILIKE '%Fort worth%' AND a.state ILIKE '%Texas%' AND a.zip ILIKE '%76123%'))
+==================================================
+
+81)
+==================================================
+🔍 [SQL Generated for User Query]: "give me contact details"
+💻 [Raw SQL]: SELECT first_name, last_name, email, phone_number, alternate_first_name, alternate_last_name, alternate_phone_number, phone_number_extension, alternate_phone_extension FROM homeowner WHERE first_name ILIKE 'Jane' AND last_name ILIKE 'Doe'
+==================================================
+
+82)
+==================================================
+🔍 [SQL Generated for User Query]: "Show all homeowners?"
+💻 [Raw SQL]: SELECT first_name, last_name, email, phone_number FROM homeowner WHERE deleted_at IS NULL
+==================================================
+

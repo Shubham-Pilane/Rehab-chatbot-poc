@@ -119,10 +119,14 @@ class ChatController {
       const cleanContent = content.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"]/g,"").toLowerCase();
       const simpleGreetings = ['hi', 'hii', 'hello', 'hey', 'yo', 'greetings', 'gm', 'gn', 'good morning', 'good afternoon', 'good evening'];
       const casualKeywords = ['sad', 'happy', 'joke', 'poem', 'story', 'funny', 'feel', 'feeling', 'chat', 'talk', 'how are you', 'who are you', 'what can you do', 'write a', 'write me'];
+      const businessWords = ['list', 'show', 'get', 'view', 'check', 'homeowner', 'homeowners', 'project', 'projects', 'vendor', 'vendors', 'invoice', 'invoices', 'task', 'tasks', 'status', 'budget', 'cost'];
+
+      const hasBusinessWord = businessWords.some(bw => cleanContent.includes(bw));
       
-      const isCasualQuery = simpleGreetings.includes(cleanContent) || 
-                            casualKeywords.some(kw => cleanContent.includes(kw)) ||
-                            cleanContent.split(/\s+/).length <= 2;
+      const isCasualQuery = !hasBusinessWord && (
+        simpleGreetings.includes(cleanContent) || 
+        casualKeywords.some(kw => cleanContent.includes(kw))
+      );
 
       let intent = 'UNKNOWN';
       let extractedEntities = {};
@@ -669,7 +673,7 @@ class ChatController {
         if (targetProjectNum) {
           return await projectRepository.getByProjectNumber(targetProjectNum);
         }
-        return { notice: 'Please specify a project number (e.g. P-1025) to view its status.' };
+        return await projectRepository.getAllProjectsWithNames();
 
       case 'PROJECT_DELAY':
       case 'PROJECT_RISK':
