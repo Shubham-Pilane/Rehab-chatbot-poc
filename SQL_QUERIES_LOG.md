@@ -492,3 +492,63 @@
 💻 [Raw SQL]: SELECT first_name, last_name, email, phone_number FROM homeowner WHERE deleted_at IS NULL
 ==================================================
 
+83)
+==================================================
+🔍 [SQL Generated for User Query]: "give some projects names"
+💻 [Raw SQL]: SELECT p.project_number, p.status, a.street_address, a.city, a.state, a.zip, h_owner.first_name, h_owner.last_name FROM project AS p JOIN home AS h ON p.home_id = h.id JOIN address AS a ON h.address_id = a.id LEFT JOIN homeowner AS h_owner ON h.homeowner_id = h_owner.id LIMIT 10
+==================================================
+
+84)
+==================================================
+🔍 [SQL Generated for User Query]: "give some project names"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id
+==================================================
+
+85)
+==================================================
+🔍 [SQL Generated for User Query]: ")What is tenant information for Habitat for Humanity Collin County"
+💻 [Raw SQL]: SELECT id, created_at, updated_at, deleted_at, tenant_id, firstname, lastname, phonenumber, email, address1, address2, city, zipcode, organization_phone, organization_name, website, profile_image_url, region, county, address_type, license_number, phone_number_extension, organization_phone_extension FROM brand WHERE organization_name ILIKE 'Habitat for Humanity Collin County'
+==================================================
+
+86)
+==================================================
+🔍 [SQL Generated for User Query]: "For Project 4317 Tahoe Dr., what is the invoice amount for Vendor GTO?"
+💻 [Raw SQL]: SELECT T3.amount FROM project AS T1 JOIN home AS T2 ON T1.home_id = T2.id JOIN address AS T4 ON T2.address_id = T4.id JOIN invoice AS T3 ON T1.id = T3.project_id JOIN vendor AS T5 ON T3.vendor_id = T5.id WHERE T4.street_address ILIKE '%4317 Tahoe Dr%' AND T5.name ILIKE 'GTO';
+==================================================
+
+87)
+==================================================
+🔍 [SQL Generated for User Query]: "list some projects"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id LIMIT 10
+==================================================
+
+88)
+==================================================
+🔍 [SQL Generated for User Query]: "list homeowners"
+💻 [Raw SQL]: SELECT first_name, last_name, email, phone_number FROM homeowner LIMIT 10
+==================================================
+
+89)
+==================================================
+🔍 [SQL Generated for User Query]: "How many homeowners?"
+💻 [Raw SQL]: SELECT COUNT(*) FROM homeowner
+==================================================
+
+90)
+==================================================
+🔍 [SQL Generated for User Query]: "list projects"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id
+==================================================
+
+91)
+==================================================
+🔍 [SQL Generated for User Query]: "Check project status?"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id
+==================================================
+
+92)
+==================================================
+🔍 [SQL Generated for User Query]: "how many projects we have"
+💻 [Raw SQL]: SELECT COUNT(id) FROM project
+==================================================
+

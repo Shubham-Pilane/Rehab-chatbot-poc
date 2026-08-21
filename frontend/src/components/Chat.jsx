@@ -253,10 +253,9 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
         return;
       }
 
-      const words = fullText.split(' ');
-      let currentWordIndex = 0;
       const assistantMsgId = data.message?.id || `temp-assistant-${Date.now()}`;
-      const step = words.length > 50 ? 3 : (words.length > 20 ? 2 : 1);
+      const words = fullText.split(' ');
+      const totalWords = words.length;
 
       // Set user message & empty assistant placeholder
       setMessages(prev => [
@@ -265,25 +264,39 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
         { id: assistantMsgId, sender: 'assistant', content: '' }
       ]);
 
-      const timer = setInterval(() => {
-        currentWordIndex += step;
-        const currentText = words.slice(0, Math.min(currentWordIndex, words.length)).join(' ');
+      // Balanced word streaming (~0.6s total duration, 1-2 words per frame)
+      const wordsPerFrame = Math.max(1, Math.ceil(totalWords / 35));
+      let currentWordIndex = 0;
 
-        setMessages(prev => prev.map(msg => 
-          msg.id === assistantMsgId ? { ...msg, content: currentText } : msg
-        ));
+      const animate = () => {
+        currentWordIndex = Math.min(currentWordIndex + wordsPerFrame, totalWords);
+        const currentText = words.slice(0, currentWordIndex).join(' ');
+
+        setMessages(prev => {
+          if (prev.length === 0) return prev;
+          const updated = [...prev];
+          const lastIndex = updated.length - 1;
+          if (updated[lastIndex].id === assistantMsgId) {
+            updated[lastIndex] = { ...updated[lastIndex], content: currentText };
+            return updated;
+          }
+          return updated.map(msg => msg.id === assistantMsgId ? { ...msg, content: currentText } : msg);
+        });
 
         if (scrollContainerRef.current) {
           scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
         }
 
-        if (currentWordIndex >= words.length) {
-          clearInterval(timer);
+        if (currentWordIndex < totalWords) {
+          requestAnimationFrame(animate);
+        } else {
           setSuggestedFollowUps(data.suggestedFollowUps || []);
           loadSessionMessages(activeSessionId);
           resolve();
         }
-      }, 10);
+      };
+
+      requestAnimationFrame(animate);
     });
   };
 
