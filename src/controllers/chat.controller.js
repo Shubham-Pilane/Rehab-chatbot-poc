@@ -211,6 +211,26 @@ class ChatController {
             businessData = await mainDbConnection.query(sqlQuery, { type: QueryTypes.SELECT });
             executedSql = sqlQuery;
             console.log(`[Dynamic SQL Executed Successfully]. Row count: ${businessData.length}`);
+
+            // Enrich businessData with milestone columns for Homeowner Application & Years Lived queries if missing
+            if (businessData && businessData.length > 0 && (cleanContent.includes('homeowner application') || cleanContent.includes('years lived') || cleanContent.includes('lived at the residence') || cleanContent.includes('tad square footage'))) {
+              if (businessData[0].milestone_homeowner_app_approved === undefined && businessData[0].id) {
+                try {
+                  const projIds = businessData.map(b => `'${b.id}'`).join(',');
+                  const enriched = await mainDbConnection.query(
+                    `SELECT id, milestone_homeowner_app_approved, milestone_homeowner_app_submitted, milestone_homeowner_app_started FROM project WHERE id IN (${projIds}) ORDER BY milestone_homeowner_app_approved DESC NULLS LAST`,
+                    { type: QueryTypes.SELECT }
+                  );
+                  const enrichedMap = new Map(enriched.map(e => [e.id, e]));
+                  businessData = businessData.map(b => ({
+                    ...b,
+                    ...(enrichedMap.get(b.id) || {})
+                  }));
+                } catch (e) {
+                  console.error('Failed to enrich businessData milestones:', e.message);
+                }
+              }
+            }
             
             // Map intent for audit logs based on tables queried
             if (sqlUpper.includes('FROM BRAND') || sqlUpper.includes('JOIN BRAND') || sqlUpper.includes('"BRAND"')) {

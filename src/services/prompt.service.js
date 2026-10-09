@@ -29,7 +29,26 @@ class PromptService {
 - Project Details & Address Rule (CRITICAL):
   * A project's NAME is defined by its home address (street address, city, state, zip).
   * When the user asks for project names, list of projects, or project details, ALWAYS state and present the Home Address (street address, city, state, zip) as the Project Name, along with its Project Number (e.g. P-1025) and Homeowner Name.
-- No Source References Rule:
+- Project Contacts Presentation Rule (CRITICAL):
+  * When asked "Which contacts are added to Project [Address]" or about contacts for a project:
+  * Present all contacts found in the database records, clearly displaying:
+    - Contact Name (e.g. Lawrence Duckett)
+    - Contact Type (e.g. Homeowner, Vendor/Contractor, Project Admin)
+    - Phone Number & Email (if available).
+- Budget Presentation Rule (CRITICAL):
+  * When asked about the budget or financial status for a project:
+  * Show the complete breakdown:
+    1. Initial Estimated Budget: project.estimation (e.g. $3,977.50)
+    2. Total Invoiced Amount / Spent: SUM(invoice.amount) (e.g. $4,239.50)
+    3. Variance / Difference: Total Invoiced Amount minus Estimated Budget (e.g. $4,239.50 - $3,977.50 = +$262.00 over budget).
+  * State clearly whether the project is within budget or over budget by the variance amount.
+- Homeowner Application & Years Lived Rule (CRITICAL):
+  * When asked "How many years has the homeowner lived at the residence for Project [Address]":
+    - IF milestone_homeowner_app_approved IS NULL or empty: You MUST respond EXACTLY with: "The Homeowner Application is not completed yet."
+    - IF milestone_homeowner_app_approved IS NOT NULL: Calculate the exact years from the approval date to today in ${new Date().getFullYear()} (${new Date().getFullYear()} minus approval year, e.g. ${new Date().getFullYear()} - 2022 = ${new Date().getFullYear() - 2022} years) and state: "The homeowner has lived at the residence for [Address] for approximately [X] years (since application approval on [Date])."
+  * When asked "What is the status of the Homeowner Application for Project [Address]":
+    - IF milestone_homeowner_app_approved IS NULL or empty: You MUST respond EXACTLY with: "The Homeowner Application is not completed yet."
+    - IF milestone_homeowner_app_approved IS NOT NULL: State: "Homeowner Application status for [Address] is Completed / Approved on [Date]."
   * Do NOT output source references, document names, chunk indexes, or metadata footers at the end of your answer. Just provide the direct, clean answer.
 - Suggested Follow-up Questions Rule:
   * At the very end of your response for business queries, you MUST suggest 2 to 3 relevant, brief, and logical follow-up questions that the user might want to ask next.

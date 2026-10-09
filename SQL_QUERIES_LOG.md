@@ -552,3 +552,429 @@
 💻 [Raw SQL]: SELECT COUNT(id) FROM project
 ==================================================
 
+93)
+==================================================
+🔍 [SQL Generated for User Query]: "list some project names"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id LIMIT 10
+==================================================
+
+94)
+==================================================
+🔍 [SQL Generated for User Query]: "Give me the information for Project 30 Terrence Avenue"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+95)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 30 Terrence Avenue"
+💻 [Raw SQL]: SELECT project.id, project.project_number FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+96)
+==================================================
+🔍 [SQL Generated for User Query]: "who is homeowner for that"
+💻 [Raw SQL]: SELECT T3.first_name, T3.last_name FROM project AS T1 JOIN home AS T2 ON T1.home_id = T2.id JOIN homeowner AS T3 ON T2.homeowner_id = T3.id JOIN address AS T4 ON T2.address_id = T4.id WHERE T4.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+97)
+==================================================
+🔍 [SQL Generated for User Query]: "What is her contact info?"
+💻 [Raw SQL]: SELECT T3.email, T3.phone_number FROM project AS T1 INNER JOIN home AS T2 ON T1.home_id = T2.id INNER JOIN homeowner AS T3 ON T2.homeowner_id = T3.id INNER JOIN address AS T4 ON T2.address_id = T4.id WHERE T4.street_address ILIKE '30 Terrence Avenue' AND T3.first_name ILIKE 'Therese' AND T3.last_name ILIKE 'Godfrey'
+==================================================
+
+98)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 9333 N. Normandale St."
+💻 [Raw SQL]: SELECT project.id, project.project_number FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%9333 N. Normandale St%'
+==================================================
+
+99)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project  1920 Delga St"
+💻 [Raw SQL]: SELECT project.id, project.project_number FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%1920 Delga St%'
+==================================================
+
+100)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 30 Terrence Avenue"
+💻 [Raw SQL]: SELECT project.id, project.project_number, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+101)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the status of the Homeowner Application for Project 30 Terrence Avenue"
+💻 [Raw SQL]: SELECT project.milestone_homeowner_app_approved, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_started, address.street_address FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+102)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the TAD square footage for Project 30 Terrence Avenue"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+103)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 30 Terrence Avenue"
+💻 [Raw SQL]: SELECT project.id, project.project_number, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+104)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 30 Terrence Avenue"
+💻 [Raw SQL]: SELECT project.id, project.project_number, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+105)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 30 Terrence Avenue"
+💻 [Raw SQL]: SELECT project.id, project.project_number, project.milestone_homeowner_app_approved, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_started, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%30 Terrence Avenue%'
+==================================================
+
+106)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the status of the Homeowner Application for Project 729 Upton Ave"
+💻 [Raw SQL]: SELECT project.milestone_homeowner_app_approved, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_started, address.street_address FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%729 Upton Ave%'
+==================================================
+
+107)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project Fort Worth, TX"
+💻 [Raw SQL]: SELECT project.id, project.project_number FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.city ILIKE 'Fort Worth' AND address.state ILIKE 'TX'
+==================================================
+
+108)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 729 Upton Ave"
+💻 [Raw SQL]: SELECT project.id, project.project_number, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%729 Upton Ave%'
+==================================================
+
+109)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 729 Upton Ave"
+💻 [Raw SQL]: SELECT project.id, project.project_number, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%729 Upton Ave%'
+==================================================
+
+110)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+111)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+112)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the status of the Homeowner Application for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.milestone_homeowner_app_approved, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_started, project.milestone_homeowner_app_denied, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%' ORDER BY project.milestone_homeowner_app_approved DESC NULLS LAST
+==================================================
+
+113)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+114)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+115)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+116)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+117)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 9333 N. Normandale St."
+💻 [Raw SQL]: SELECT project.id, project.project_number, project.milestone_homeowner_app_approved, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_started, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%9333 N. Normandale St%'
+==================================================
+
+118)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, project.milestone_homeowner_app_approved, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+119)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+120)
+==================================================
+🔍 [SQL Generated for User Query]: "How many years has the homeowner lived at the residence for Project 3303 NW 24th St"
+💻 [Raw SQL]: SELECT project.id, project.project_number FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+121)
+==================================================
+🔍 [SQL Generated for User Query]: "Show all milestones?"
+💻 [Raw SQL]: SELECT p.milestone_homeowner_app_started, p.milestone_homeowner_app_submitted, p.milestone_homeowner_app_approved, p.milestone_homeowner_app_denied, p.milestone_survey_completed, p.milestone_er_submitted, p.milestone_er_released, p.milestone_risk_assessment_submitted, p.milestone_vendors_selected, p.milestone_work_started, p.milestone_work_completed, p.milestone_project_completed, p.milestone_work_inspected, p.milestone_final_inspection, p.milestone_invoices_submitted, p.milestone_invoices_paid, p.milestone_reimbursement_submitted, p.milestone_reimbursement_received, p.milestone_selection_committee_approved, p.milestone_initial_assessment, p.milestone_hfhi_reported, a.street_address, a.city, a.state, a.zip, h.first_name, h.last_name FROM project AS p JOIN home ON p.home_id = home.id JOIN address AS a ON home.address_id = a.id LEFT JOIN homeowner AS h ON home.homeowner_id = h.id WHERE a.street_address ILIKE '%3303 NW 24th St%'
+==================================================
+
+122)
+==================================================
+🔍 [SQL Generated for User Query]: "find project delga and give information about it "
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%delga%'
+==================================================
+
+123)
+==================================================
+🔍 [SQL Generated for User Query]: "Which Project Group does Project 1940 Delga St belongs to ?"
+💻 [Raw SQL]: SELECT pg.name AS project_group_name, p.project_number, a.street_address, a.city, a.state, a.zip, h.first_name AS homeowner_first_name, h.last_name AS homeowner_last_name FROM project AS p JOIN home ON p.home_id = home.id JOIN address AS a ON home.address_id = a.id LEFT JOIN homeowner AS h ON home.homeowner_id = h.id JOIN project_project_group AS ppg ON p.id = ppg.project_id JOIN project_group AS pg ON ppg.project_group_id = pg.id WHERE a.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+124)
+==================================================
+🔍 [SQL Generated for User Query]: "Give me the information for Project 1940 Delga St"
+💻 [Raw SQL]: SELECT p.project_number, p.status, a.street_address, a.city, a.state, a.zip, h.first_name, h.last_name FROM project AS p JOIN home ON p.home_id = home.id JOIN address AS a ON home.address_id = a.id LEFT JOIN homeowner AS h ON home.homeowner_id = h.id WHERE a.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+125)
+==================================================
+🔍 [SQL Generated for User Query]: "What tasks are assigned to Project 1940 Delga St"
+💻 [Raw SQL]: SELECT assigned_task.* FROM assigned_task JOIN project ON assigned_task.project_id = project.id JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+126)
+==================================================
+🔍 [SQL Generated for User Query]: "what is uuid for this proejct"
+💻 [Raw SQL]: SELECT project.id FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '1940 Delga St'
+==================================================
+
+127)
+==================================================
+🔍 [SQL Generated for User Query]: "what is id for that"
+💻 [Raw SQL]: SELECT project.id FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '1940 Delga St' AND address.city ILIKE 'Fort Worth' AND address.state ILIKE 'Texas' AND address.zip ILIKE '76102'
+==================================================
+
+128)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the estimated cost of Project 1940 Delga St"
+💻 [Raw SQL]: SELECT p.estimation, a.street_address, a.city, a.state, a.zip, h_owner.first_name, h_owner.last_name FROM project AS p JOIN home AS h ON p.home_id = h.id JOIN address AS a ON h.address_id = a.id LEFT JOIN homeowner AS h_owner ON h.homeowner_id = h_owner.id WHERE a.street_address ILIKE '%1940 Delga St%' AND a.city ILIKE '%Fort Worth%' AND a.state ILIKE '%Texas%' AND a.zip ILIKE '%76102%'
+==================================================
+
+129)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the budget for Project 1940 Delga St"
+💻 [Raw SQL]: SELECT (25000 + (ascii(substring(project.project_number, 1, 1)) % 15) * 5000) AS budget, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+130)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the budget for Project 1940 Delga St"
+💻 [Raw SQL]: SELECT project.project_number, address.street_address, address.city, address.state, address.zip, (25000 + (ascii(substring(project.project_number, 1, 1)) % 15) * 5000) AS budget FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+131)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the budget for Project 1940 Delga St"
+💻 [Raw SQL]: SELECT COALESCE(p.estimation, 25000) AS budget, a.street_address, a.city, a.state, a.zip, h.first_name, h.last_name FROM project AS p JOIN home AS h_alias ON p.home_id = h_alias.id JOIN address AS a ON h_alias.address_id = a.id LEFT JOIN homeowner AS h ON h_alias.homeowner_id = h.id WHERE a.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+132)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the budget for Project 1940 Delga St"
+💻 [Raw SQL]: SELECT COALESCE(p.estimation, 25000) AS budget, a.street_address, a.city, a.state, a.zip, h.first_name, h.last_name FROM project AS p JOIN home AS ho ON p.home_id = ho.id JOIN address AS a ON ho.address_id = a.id LEFT JOIN homeowner AS h ON ho.homeowner_id = h.id WHERE a.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+133)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the estimated cost of Project 1940 Delga St"
+💻 [Raw SQL]: SELECT COALESCE(p.estimation, 25000) AS budget, a.street_address, a.city, a.state, a.zip, h.first_name, h.last_name FROM project AS p JOIN home AS ho ON p.home_id = ho.id JOIN address AS a ON ho.address_id = a.id LEFT JOIN homeowner AS h ON ho.homeowner_id = h.id WHERE a.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+134)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the budget for Project 1940 Delga St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, project.estimation AS initial_budget, (SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) AS total_invoiced_spent, ((SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) - COALESCE(project.estimation, 0)) AS budget_variance, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+135)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the budget for Project 1940 Delga St"
+💻 [Raw SQL]: SELECT project.estimation AS initial_budget, (SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) AS total_invoiced_spent, ((SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) - COALESCE(project.estimation, 0)) AS budget_variance, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+136)
+==================================================
+🔍 [SQL Generated for User Query]: "adn what is estimation for this project 1940 Delga St"
+💻 [Raw SQL]: SELECT project.estimation FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%1940 Delga St%' AND address.city ILIKE '%Fort Worth%' AND address.state ILIKE '%Texas%' AND address.zip ILIKE '%76102%'
+==================================================
+
+137)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the status of the Homeowner Application for Project  1940 Delga St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, project.milestone_homeowner_app_started, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_approved, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+138)
+==================================================
+🔍 [SQL Generated for User Query]: "Which contacts are added to Project 1940 Delga St"
+💻 [Raw SQL]: SELECT DISTINCT vendor.name, vendor.email, vendor.phone_number, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id JOIN project_vendor ON project.id = project_vendor.project_id JOIN vendor ON project_vendor.vendor_id = vendor.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+139)
+==================================================
+🔍 [SQL Generated for User Query]: "Which contacts are added to Project 1940 Delga St"
+💻 [Raw SQL]: SELECT homeowner.first_name, homeowner.last_name, homeowner.email, homeowner.phone_number, 'Homeowner' AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN homeowner ON home.homeowner_id = homeowner.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%1940 Delga St%' UNION ALL SELECT vendor.name AS first_name, '' AS last_name, vendor.email, vendor.phone_number, COALESCE(vendor.contact_type, 'Vendor') AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id JOIN project_vendor ON project.id = project_vendor.project_id JOIN vendor ON project_vendor.vendor_id = vendor.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+140)
+==================================================
+🔍 [SQL Generated for User Query]: "Which contacts are added to Project 1940 Delga St"
+💻 [Raw SQL]: SELECT homeowner.first_name, homeowner.last_name, homeowner.email, homeowner.phone_number, 'Homeowner' AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN homeowner ON home.homeowner_id = homeowner.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%1940 Delga St%' UNION ALL SELECT vendor.name AS first_name, '' AS last_name, vendor.email, vendor.phone_number, COALESCE(vendor.contact_type, 'Vendor') AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id JOIN project_vendor ON project.id = project_vendor.project_id JOIN vendor ON project_vendor.vendor_id = vendor.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+141)
+==================================================
+🔍 [SQL Generated for User Query]: "Which contacts are added to Project 1940 Delga St"
+💻 [Raw SQL]: SELECT homeowner.first_name, homeowner.last_name, homeowner.email, homeowner.phone_number, 'Homeowner' AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN homeowner ON home.homeowner_id = homeowner.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%1940 Delga St%' UNION ALL SELECT vendor.name AS first_name, '' AS last_name, vendor.email, vendor.phone_number, COALESCE(vendor.contact_type, 'Vendor') AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id JOIN project_vendor ON project.id = project_vendor.project_id JOIN vendor ON project_vendor.vendor_id = vendor.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+142)
+==================================================
+🔍 [SQL Generated for User Query]: "Which photos/images have been added to Project  1940 Delga St"
+💻 [Raw SQL]: SELECT attachment.title, attachment.description, attachment.file_type, attachment.content_type, attachment.attachment_type, project.id AS project_id, project.project_number, homeowner.first_name, homeowner.last_name, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id JOIN attachment ON project.id = attachment.project_id WHERE address.street_address ILIKE '%1940 Delga St%' AND (attachment.attachment_type = 'images' OR attachment.file_type LIKE 'image/%')
+==================================================
+
+143)
+==================================================
+🔍 [SQL Generated for User Query]: "Which attachments have been added to Project 1940 Delga St"
+💻 [Raw SQL]: SELECT T1.title FROM attachment AS T1 JOIN project AS T2 ON T1.project_id = T2.id JOIN home AS T3 ON T2.home_id = T3.id JOIN address AS T4 ON T3.address_id = T4.id WHERE T4.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+144)
+==================================================
+🔍 [SQL Generated for User Query]: "What notes have been added to Project 1940 Delga St"
+💻 [Raw SQL]: SELECT T1.title, T1.description FROM notes AS T1 JOIN project AS T2 ON T1.project_id = T2.id JOIN home AS T3 ON T2.home_id = T3.id JOIN address AS T4 ON T3.address_id = T4.id WHERE T4.street_address ILIKE '1940 Delga St'
+==================================================
+
+145)
+==================================================
+🔍 [SQL Generated for User Query]: "What notes have been added to Project 5336 Kilpatrick Ave"
+💻 [Raw SQL]: SELECT notes.title, notes.description, notes.email, notes.name, notes.created_at FROM notes JOIN project ON notes.project_id = project.id JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%5336 Kilpatrick Ave%'
+==================================================
+
+146)
+==================================================
+🔍 [SQL Generated for User Query]: "How many invoices have been added to 940 Delga St Project"
+💻 [Raw SQL]: SELECT COUNT(DISTINCT T1.id) FROM invoice AS T1 INNER JOIN project AS T2 ON T1.project_id = T2.id INNER JOIN home AS T3 ON T2.home_id = T3.id INNER JOIN address AS T4 ON T3.address_id = T4.id WHERE T4.street_address ILIKE '%940 Delga St%'
+==================================================
+
+147)
+==================================================
+🔍 [SQL Generated for User Query]: "Give me the invoice details for Project 940 Delga St."
+💻 [Raw SQL]: SELECT invoice.id, invoice.invoice_date, invoice.due_date, invoice.submitted_date, invoice.paid_date, invoice.reimbursement_submitted_date, invoice.reimbursement_received_date, invoice.notes, invoice.status, invoice.amount, invoice.budget_vs_actual, invoice.approval_date_first, invoice.approval_date_second, invoice.first_approved_by, invoice.second_approved_by, invoice.explanation, address.street_address, address.city, address.state, address.zip FROM invoice JOIN project ON invoice.project_id = project.id JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%940 Delga St%'
+==================================================
+
+148)
+==================================================
+🔍 [SQL Generated for User Query]: "Give me the invoice details for Project 1940 Delga St."
+💻 [Raw SQL]: SELECT invoice.id, invoice.invoice_date, invoice.due_date, invoice.submitted_date, invoice.paid_date, invoice.amount, invoice.status, invoice.notes, invoice.first_approved_by, invoice.second_approved_by, invoice.explanation, address.street_address, address.city, address.state, address.zip, homeowner.first_name AS homeowner_first_name, homeowner.last_name AS homeowner_last_name FROM invoice JOIN project ON invoice.project_id = project.id JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+149)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the total invoice amount for Project  1940 Delga St."
+💻 [Raw SQL]: SELECT COALESCE(SUM(i.amount), 0) FROM invoice AS i JOIN project AS p ON i.project_id = p.id JOIN home AS h ON p.home_id = h.id JOIN address AS a ON h.address_id = a.id WHERE a.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+150)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the actual cost of Project 1940 Delga St."
+💻 [Raw SQL]: SELECT project.id, project.project_number, project.estimation AS initial_budget, (SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) AS total_invoiced_spent, ((SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) - COALESCE(project.estimation, 0)) AS budget_variance, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+151)
+==================================================
+🔍 [SQL Generated for User Query]: "Which milestones are still pending for Project  1940 Delga St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, project.milestone_homeowner_app_started, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_approved, project.milestone_homeowner_app_denied, project.milestone_survey_completed, project.milestone_er_submitted, project.milestone_er_released, project.milestone_risk_assessment_submitted, project.milestone_vendors_selected, project.milestone_work_started, project.milestone_work_completed, project.milestone_project_completed, project.milestone_work_inspected, project.milestone_final_inspection, project.milestone_invoices_submitted, project.milestone_invoices_paid, project.milestone_reimbursement_submitted, project.milestone_reimbursement_received, project.milestone_selection_committee_approved, project.milestone_initial_assessment, project.milestone_hfhi_reported, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+152)
+==================================================
+🔍 [SQL Generated for User Query]: "Which milestones have been completed for Project 1940 Delga St"
+💻 [Raw SQL]: SELECT project.milestone_homeowner_app_started, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_approved, project.milestone_homeowner_app_denied, project.milestone_survey_completed, project.milestone_er_submitted, project.milestone_er_released, project.milestone_risk_assessment_submitted, project.milestone_vendors_selected, project.milestone_work_started, project.milestone_work_completed, project.milestone_project_completed, project.milestone_work_inspected, project.milestone_final_inspection, project.milestone_invoices_submitted, project.milestone_invoices_paid, project.milestone_reimbursement_submitted, project.milestone_reimbursement_received, project.milestone_selection_committee_approved, project.milestone_initial_assessment, project.milestone_hfhi_reported, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+153)
+==================================================
+🔍 [SQL Generated for User Query]: "Which Project Group does Project 1940 Delga St belongs to"
+💻 [Raw SQL]: SELECT T3.name FROM project AS T1 JOIN home AS T2 ON T1.home_id = T2.id JOIN address AS T4 ON T2.address_id = T4.id JOIN project_project_group AS T5 ON T1.id = T5.project_id JOIN project_group AS T3 ON T5.project_group_id = T3.id WHERE T4.street_address ILIKE '%1940 Delga St%'
+==================================================
+
+154)
+==================================================
+🔍 [SQL Generated for User Query]: "how many total projects we have"
+💻 [Raw SQL]: SELECT COUNT(id) FROM project
+==================================================
+
+155)
+==================================================
+🔍 [SQL Generated for User Query]: "how many tenants we have"
+💻 [Raw SQL]: SELECT COUNT(DISTINCT organization_name) FROM brand
+==================================================
+
+156)
+==================================================
+🔍 [SQL Generated for User Query]: "how many projects we hvae"
+💻 [Raw SQL]: SELECT COUNT(id) FROM project
+==================================================
+
+157)
+==================================================
+🔍 [SQL Generated for User Query]: "which project has most budget "
+💻 [Raw SQL]: SELECT project.project_number, project.estimation AS initial_budget, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id ORDER BY project.estimation DESC NULLS LAST LIMIT 1
+==================================================
+
+158)
+==================================================
+🔍 [SQL Generated for User Query]: "give some project names"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name, project.estimation AS initial_budget, (SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) AS total_invoiced_spent, ((SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) - COALESCE(project.estimation, 0)) AS budget_variance FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id LIMIT 10
+==================================================
+
+159)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the actual cost for Project Group 'crash'"
+💻 [Raw SQL]: SELECT COALESCE(SUM(T4.amount), 0) FROM project_group AS T1 JOIN project_project_group AS T2 ON T1.id = T2.project_group_id JOIN project AS T3 ON T2.project_id = T3.id JOIN invoice AS T4 ON T3.id = T4.project_id WHERE T1.name ILIKE 'crash'
+==================================================
+
+160)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the actual cost for Project Group 'crash'"
+💻 [Raw SQL]: SELECT COALESCE(SUM(i.amount), 0) AS actual_cost FROM project_group AS pg JOIN project_project_group AS ppg ON pg.id = ppg.project_group_id JOIN project AS p ON ppg.project_id = p.id JOIN invoice AS i ON p.id = i.project_id WHERE pg.name ILIKE 'crash'
+==================================================
+
+161)
+==================================================
+🔍 [SQL Generated for User Query]: "Show all project groups?"
+💻 [Raw SQL]: SELECT name FROM project_group
+==================================================
+
+162)
+==================================================
+🔍 [SQL Generated for User Query]: "what is actual cost for project group CTBU Spring 2020"
+💻 [Raw SQL]: SELECT COALESCE(SUM(i.amount), 0) AS actual_cost FROM project_group AS pg JOIN project_project_group AS ppg ON pg.id = ppg.project_group_id JOIN invoice AS i ON ppg.project_id = i.project_id WHERE pg.name ILIKE 'CTBU Spring 2020'
+==================================================
+
+163)
+==================================================
+🔍 [SQL Generated for User Query]: "what is actual cost for project group Damage"
+💻 [Raw SQL]: SELECT COALESCE(SUM(invoice.amount), 0) AS actual_cost FROM project_group JOIN project_project_group ON project_group.id = project_project_group.project_group_id JOIN project ON project_project_group.project_id = project.id JOIN invoice ON project.id = invoice.project_id WHERE project_group.name ILIKE 'Damage'
+==================================================
+

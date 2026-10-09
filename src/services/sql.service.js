@@ -462,11 +462,12 @@ Refer to the following database tables and columns:
     * Relations:
       - vendor_id points to vendor.id
 
-STRICT MAPPING INSTRUCTIONS:
-- The tables budgets and grant_details do NOT exist in this database. If the user asks for budget or spent values, simulate it by joining "project" and adding a select expression for budget/spent: 
-  * "budget" as a simulated column: (25000 + (ascii(substring(project.project_number, 1, 1)) % 15) * 5000)
-  * "spent" as a simulated column: ((25000 + (ascii(substring(project.project_number, 1, 1)) % 15) * 5000) * 0.85)
-  (Or calculate a clean budget using these formula strings so budget queries work dynamically!).
+- Budget & Spent Mapping (CRITICAL):
+  * When the user prompt asks about budget, budget report, cost, or financial status for a project, ALWAYS SELECT:
+    - project.estimation AS initial_budget
+    - (SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) AS total_invoiced_spent
+    - ((SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) - COALESCE(project.estimation, 0)) AS budget_variance
+    (e.g. SELECT project.id, project.estimation AS initial_budget, (SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) AS total_invoiced_spent, ((SELECT COALESCE(SUM(amount), 0) FROM invoice WHERE project_id = project.id) - COALESCE(project.estimation, 0)) AS budget_variance, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%...%').
 - Filter project status or states correctly: "OPEN" projects are filtered by project.project_state = 'OPEN'.
 - PostgreSQL Casing Matcher: PostgreSQL string comparisons are case-sensitive. When filtering text columns by names, titles, addresses, or status values (e.g. project_group.name, brand.organization_name, vendor.name, homeowner.first_name, address.street_address), always use the 'ILIKE' operator instead of '=' to do case-insensitive comparisons (e.g. use "project_group.name ILIKE 'crash'" instead of "project_group.name = 'crash'").
 - Address vs. Project Number Disambiguation:
@@ -475,6 +476,23 @@ STRICT MAPPING INSTRUCTIONS:
 - Tenant / Tenants Mapping: The terms "tenant" and "tenants" refer exclusively to the "brand" table. When asked about tenants (e.g. number of tenants, list of tenants, names of tenants), always query the "brand" table and use the "organization_name" column for their names. Do NOT query the "homeowner" table for tenant queries.
 - Tenant Lookup for a Project: Every project in the database belongs to a tenant/brand via project.tenant_id = brand.tenant_id. To find which tenant/affiliate a project belongs to, write: SELECT brand.organization_name FROM project JOIN brand ON project.tenant_id = brand.tenant_id WHERE project.id = '<Project_ID>' (or WHERE address.street_address ILIKE '%<Street>%'). Do NOT add 5+ over-constrained text WHERE conditions (such as city, state, zip, homeowner name) when project.id or street_address is known.
 - Affiliate / Tenant Name Mapping: If the user asks for the "affiliate name", "tenant name", or "affiliate/organization details", query the table "brand" and select/filter using the column "organization_name" (e.g. SELECT organization_name FROM brand).
+- Project Contacts Mapping (CRITICAL):
+  * When the user asks "Which contacts are added to Project [Address]", "Show contacts for project", or asks for project contacts:
+  * ALWAYS query both Homeowner and assigned Vendors for the project:
+    SELECT homeowner.first_name, homeowner.last_name, homeowner.email, homeowner.phone_number, 'Homeowner' AS contact_type, address.street_address, address.city, address.state, address.zip 
+    FROM project 
+    JOIN home ON project.home_id = home.id 
+    JOIN homeowner ON home.homeowner_id = homeowner.id 
+    JOIN address ON home.address_id = address.id 
+    WHERE address.street_address ILIKE '%...'
+    UNION ALL
+    SELECT vendor.name AS first_name, '' AS last_name, vendor.email, vendor.phone_number, COALESCE(vendor.contact_type, 'Vendor') AS contact_type, address.street_address, address.city, address.state, address.zip 
+    FROM project 
+    JOIN home ON project.home_id = home.id 
+    JOIN address ON home.address_id = address.id 
+    JOIN project_vendor ON project.id = project_vendor.project_id 
+    JOIN vendor ON project_vendor.vendor_id = vendor.id 
+    WHERE address.street_address ILIKE '%...';
 - Project Names Rule (CRITICAL):
   * A project's NAME is defined by its home address (street_address, city, state, zip).
   * Whenever the user asks for project names, names of projects, or project list with names, ALWAYS JOIN project, home, and address:
@@ -483,7 +501,8 @@ STRICT MAPPING INSTRUCTIONS:
     JOIN home ON project.home_id = home.id 
     JOIN address ON home.address_id = address.id 
     LEFT JOIN homeowner ON home.homeowner_id = homeowner.id;
-- Invoices that are pending or unpaid are filtered by invoice.status IN ('Submitted', 'Due').
+- Homeowner Application Queries (CRITICAL):
+  * Whenever the user prompt asks about Homeowner Application, status of application, years lived at residence, years has homeowner lived, or TAD square footage, ALWAYS include project.milestone_homeowner_app_approved, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_started, and address.street_address in the SELECT list (e.g. SELECT project.id, project.project_number, project.milestone_homeowner_app_approved, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_started, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%...' ORDER BY project.milestone_homeowner_app_approved DESC NULLS LAST).
 - Milestone Dates: Major project milestones are stored as columns directly on the "project" table (milestone_er_released, milestone_er_submitted, milestone_final_inspection, milestone_hfhi_reported, milestone_homeowner_app_approved, milestone_homeowner_app_denied, milestone_homeowner_app_started, milestone_homeowner_app_submitted, milestone_initial_assessment, milestone_invoices_paid, milestone_invoices_submitted, milestone_project_completed, milestone_reimbursement_received, milestone_reimbursement_submitted, milestone_risk_assessment_submitted, milestone_selection_committee_approved, milestone_survey_completed, milestone_vendors_selected, milestone_work_completed, milestone_work_inspected, milestone_work_started).
   * For queries about when a milestone was completed/submitted, select the corresponding milestone column directly from the "project" table (e.g. SELECT milestone_er_submitted FROM project WHERE id = ...).
 - Joins:
@@ -509,12 +528,12 @@ Example Output:
 `;
 
     try {
-      const combinedQuery = contextText 
+      const combinedQuery = contextText
         ? `Conversation History:\n${contextText}\n\nUser's follow-up request (write the SQL query to answer this request based on the context above): ${userQuery}`
         : userQuery;
       const result = await geminiService.generateJsonResponse(systemPrompt, combinedQuery, 'sql');
       let sqlQuery = result && result.sql ? result.sql.trim() : '';
-      
+
       // Auto-fix LLM join error: replace tenant_id = brand.id with tenant_id = brand.tenant_id
       if (sqlQuery) {
         sqlQuery = sqlQuery.replace(/(\b\w+\.tenant_id\s*=\s*\b\w+)\.id\b/gi, '$1.tenant_id');
@@ -525,7 +544,7 @@ Example Output:
         sqlQuery = sqlQuery.replace(/(\b\w+)\.project_number(\s+ILIKE\s+)'([^']+)'/gi, (match, projAlias, ilikeOp, val) => {
           return `address.street_address${ilikeOp}'${val}'`;
         });
-        
+
         if (!/JOIN\s+home\b/i.test(sqlQuery)) {
           sqlQuery = sqlQuery.replace(/FROM\s+project(\s+AS\s+\w+|\s+\w+)?/i, (match) => {
             const aliasMatch = match.match(/project(?:\s+AS)?\s+(\w+)/i);
@@ -553,7 +572,7 @@ Example Output:
   isValidQuery(sql) {
     if (!sql) return false;
     const cleanSql = sql.trim().toUpperCase();
-    
+
     // Safety check: must start with SELECT (read-only query)
     if (!cleanSql.startsWith('SELECT')) {
       console.warn('⚠️ WARNING: Blocked SQL query. Does not start with SELECT:', sql);
@@ -562,10 +581,10 @@ Example Output:
 
     // Safety check: reject any mutation keywords
     const forbiddenKeywords = [
-      'INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER', 'TRUNCATE', 
+      'INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER', 'TRUNCATE',
       'RENAME', 'CREATE', 'GRANT', 'REVOKE', 'REPLACE', 'UPSERT'
     ];
-    
+
     for (const keyword of forbiddenKeywords) {
       const regex = new RegExp(`\\b${keyword}\\b`, 'i');
       if (regex.test(sql)) {
@@ -573,7 +592,7 @@ Example Output:
         return false;
       }
     }
-    
+
     return true;
   }
 }
