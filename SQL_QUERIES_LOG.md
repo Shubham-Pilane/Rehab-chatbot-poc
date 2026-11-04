@@ -978,3 +978,219 @@
 💻 [Raw SQL]: SELECT COALESCE(SUM(invoice.amount), 0) AS actual_cost FROM project_group JOIN project_project_group ON project_group.id = project_project_group.project_group_id JOIN project ON project_project_group.project_id = project.id JOIN invoice ON project.id = invoice.project_id WHERE project_group.name ILIKE 'Damage'
 ==================================================
 
+164)
+==================================================
+🔍 [SQL Generated for User Query]: "give some tenants name"
+💻 [Raw SQL]: SELECT organization_name FROM brand
+==================================================
+
+165)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the Work Started Date for Project 899 Rehab St"
+💻 [Raw SQL]: SELECT project.milestone_work_started, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+166)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the total number of projects?"
+💻 [Raw SQL]: SELECT COUNT(id) FROM project
+==================================================
+
+167)
+==================================================
+🔍 [SQL Generated for User Query]: "Give me the details of Project899 Rehab St"
+💻 [Raw SQL]: SELECT project.project_number, project.status, address.street_address, address.city, address.state, address.zip, homeowner.first_name, homeowner.last_name FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id LEFT JOIN homeowner ON home.homeowner_id = homeowner.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+168)
+==================================================
+🔍 [SQL Generated for User Query]: "Which users are assigned to Project Rehab St"
+💻 [Raw SQL]: SELECT homeowner.first_name, homeowner.last_name, homeowner.email, homeowner.phone_number, 'Homeowner' AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN homeowner ON home.homeowner_id = homeowner.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%Rehab St%' UNION ALL SELECT vendor.name AS first_name, '' AS last_name, vendor.email, vendor.phone_number, COALESCE(vendor.contact_type, 'Vendor') AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id JOIN project_vendor ON project.id = project_vendor.project_id JOIN vendor ON project_vendor.vendor_id = vendor.id WHERE address.street_address ILIKE '%Rehab St%'
+==================================================
+
+169)
+==================================================
+🔍 [SQL Generated for User Query]: "For Project 4317 Tahoe Dr., what is the invoice amount for Vendor GTO?"
+💻 [Raw SQL]: SELECT SUM(i.amount) FROM invoice AS i JOIN project AS p ON i.project_id = p.id JOIN home AS h ON p.home_id = h.id JOIN address AS a ON h.address_id = a.id JOIN vendor AS v ON i.vendor_id = v.id WHERE a.street_address ILIKE '%4317 Tahoe Dr%' AND v.name ILIKE '%GTO%'
+==================================================
+
+170)
+==================================================
+🔍 [SQL Generated for User Query]: "What tasks are assigned to Project 899 Rehab St"
+💻 [Raw SQL]: SELECT at.title, at.description FROM assigned_task AS at JOIN project AS p ON at.project_id = p.id JOIN home AS h ON p.home_id = h.id JOIN address AS a ON h.address_id = a.id WHERE a.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+171)
+==================================================
+🔍 [SQL Generated for User Query]: "Which contacts are added to Project 899 Rehab St"
+💻 [Raw SQL]: SELECT homeowner.first_name, homeowner.last_name, homeowner.email, homeowner.phone_number, 'Homeowner' AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN homeowner ON home.homeowner_id = homeowner.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%899 Rehab St%' UNION ALL SELECT vendor.name AS first_name, '' AS last_name, vendor.email, vendor.phone_number, COALESCE(vendor.contact_type, 'Vendor') AS contact_type, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id JOIN project_vendor ON project.id = project_vendor.project_id JOIN vendor ON project_vendor.vendor_id = vendor.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+172)
+==================================================
+🔍 [SQL Generated for User Query]: "Which vendors are assigned to Project 899 Rehab St"
+💻 [Raw SQL]: SELECT DISTINCT vendor.name, vendor.email, vendor.phone_number, vendor.contact_type FROM vendor JOIN project_vendor ON vendor.id = project_vendor.vendor_id JOIN project ON project_vendor.project_id = project.id JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+173)
+==================================================
+🔍 [SQL Generated for User Query]: "Give me the invoice details for Project 899 Rehab St"
+💻 [Raw SQL]: SELECT invoice.*, project.project_number, address.street_address, address.city, address.state, address.zip FROM invoice JOIN project ON invoice.project_id = project.id JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+174)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the total invoice amount for Project  899 Rehab St"
+💻 [Raw SQL]: SELECT COALESCE(SUM(T2.amount), 0) FROM project AS T1 JOIN invoice AS T2 ON T1.id = T2.project_id JOIN home AS T3 ON T1.home_id = T3.id JOIN address AS T4 ON T3.address_id = T4.id WHERE T4.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+175)
+==================================================
+🔍 [SQL Generated for User Query]: "Which milestones are still pending for Project  899 Rehab St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address, address.city, address.state, address.zip, project.milestone_homeowner_app_started, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_approved, project.milestone_homeowner_app_denied, project.milestone_survey_completed, project.milestone_er_submitted, project.milestone_er_released, project.milestone_risk_assessment_submitted, project.milestone_vendors_selected, project.milestone_work_started, project.milestone_work_completed, project.milestone_project_completed, project.milestone_work_inspected, project.milestone_final_inspection, project.milestone_invoices_submitted, project.milestone_invoices_paid, project.milestone_reimbursement_submitted, project.milestone_reimbursement_received, project.milestone_selection_committee_approved, project.milestone_initial_assessment, project.milestone_hfhi_reported FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+176)
+==================================================
+🔍 [SQL Generated for User Query]: "Which milestones are still pending for Project 4317 Tahoe Dr"
+💻 [Raw SQL]: SELECT project.id, project.project_number, address.street_address, address.city, address.state, address.zip, project.milestone_homeowner_app_started, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_approved, project.milestone_homeowner_app_denied, project.milestone_survey_completed, project.milestone_er_submitted, project.milestone_er_released, project.milestone_risk_assessment_submitted, project.milestone_vendors_selected, project.milestone_work_started, project.milestone_work_completed, project.milestone_project_completed, project.milestone_work_inspected, project.milestone_final_inspection, project.milestone_invoices_submitted, project.milestone_invoices_paid, project.milestone_reimbursement_submitted, project.milestone_reimbursement_received, project.milestone_selection_committee_approved, project.milestone_initial_assessment, project.milestone_hfhi_reported FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%4317 Tahoe Dr%'
+==================================================
+
+177)
+==================================================
+🔍 [SQL Generated for User Query]: "Which milestones are still pending for 4605 Virgil St"
+💻 [Raw SQL]: SELECT project.id, project.project_number, project.milestone_homeowner_app_started, project.milestone_homeowner_app_submitted, project.milestone_homeowner_app_approved, project.milestone_homeowner_app_denied, project.milestone_survey_completed, project.milestone_er_submitted, project.milestone_er_released, project.milestone_risk_assessment_submitted, project.milestone_vendors_selected, project.milestone_work_started, project.milestone_work_completed, project.milestone_project_completed, project.milestone_work_inspected, project.milestone_final_inspection, project.milestone_invoices_submitted, project.milestone_invoices_paid, project.milestone_reimbursement_submitted, project.milestone_reimbursement_received, project.milestone_selection_committee_approved, project.milestone_initial_assessment, project.milestone_hfhi_reported, address.street_address, address.city, address.state, address.zip FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%4605 Virgil St%'
+==================================================
+
+178)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the price of task full paint "
+💻 [Raw SQL]: SELECT price FROM task WHERE title ILIKE '%full paint%'
+==================================================
+
+179)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the budget for project group PAH 2020"
+💻 [Raw SQL]: SELECT COALESCE(SUM(p.estimation), 0) FROM project_group pg JOIN project_project_group ppg ON pg.id = ppg.project_group_id JOIN project p ON ppg.project_id = p.id WHERE pg.name ILIKE 'PAH 2020'
+==================================================
+
+180)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the ACTUAL COST for project group PAH 2020"
+💻 [Raw SQL]: SELECT COALESCE(SUM(T4.amount), 0) FROM project_group AS T1 JOIN project_project_group AS T2 ON T1.id = T2.project_group_id JOIN project AS T3 ON T2.project_id = T3.id JOIN invoice AS T4 ON T3.id = T4.project_id WHERE T1.name ILIKE 'PAH 2020'
+==================================================
+
+181)
+==================================================
+🔍 [SQL Generated for User Query]: "What are the Grant Number, Grant Name, and Grant Amount for project group SmartBuyHomes2026"
+💻 [Raw SQL]: SELECT grant_number, grant_name, grant_amount FROM project_group WHERE name ILIKE 'SmartBuyHomes2026'
+==================================================
+
+182)
+==================================================
+🔍 [SQL Generated for User Query]: "What are the Grant Number, Grant Name, and Grant Amount for project group crash"
+💻 [Raw SQL]: SELECT grant_number, grant_name, grant_amount FROM project_group WHERE name ILIKE 'crash'
+==================================================
+
+183)
+==================================================
+🔍 [SQL Generated for User Query]: "What is HUD Number of Project 899 Rehab St"
+💻 [Raw SQL]: SELECT project.hud_number FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+184)
+==================================================
+🔍 [SQL Generated for User Query]: "What is the Survey Completed Date for Project 899 Rehab St "
+💻 [Raw SQL]: SELECT project.milestone_survey_completed FROM project JOIN home ON project.home_id = home.id JOIN address ON home.address_id = address.id WHERE address.street_address ILIKE '%899 Rehab St%'
+==================================================
+
+185)
+==================================================
+🔍 [SQL Generated for User Query]: "give me details of vendor Terracon"
+💻 [Raw SQL]: SELECT id FROM project LIMIT 1
+==================================================
+
+186)
+==================================================
+🔍 [SQL Generated for User Query]: "give me contact details of vendor Terracon"
+💻 [Raw SQL]: SELECT id FROM project LIMIT 1
+==================================================
+
+187)
+==================================================
+🔍 [SQL Generated for User Query]: "give me contact details for this vendor Terracon"
+💻 [Raw SQL]: SELECT id FROM project LIMIT 1
+==================================================
+
+188)
+==================================================
+🔍 [SQL Generated for User Query]: "give me task details from task group Dipppp"
+💻 [Raw SQL]: SELECT task.title, task.description, task.unit, task.quantity_type, task.price, task.price_type, task.notes FROM task JOIN task_group ON task.task_group_id = task_group.id WHERE task_group.title ILIKE 'Dipppp'
+==================================================
+
+189)
+==================================================
+🔍 [SQL Generated for User Query]: "give me task details from task group Masonry"
+💻 [Raw SQL]: SELECT task.title, task.description, task.unit, task.quantity_type, task.price, task.price_type FROM task JOIN task_group ON task.task_group_id = task_group.id WHERE task_group.title ILIKE 'Masonry'
+==================================================
+
+190)
+==================================================
+🔍 [SQL Generated for User Query]: "give me task details from task group Masonry and from task list name May 01 05/08/2023"
+💻 [Raw SQL]: SELECT T1.title, T1.description, T1.price, T1.unit FROM task AS T1 JOIN task_group AS T2 ON T1.task_group_id = T2.id JOIN task_list_name AS T3 ON T2.task_list_name_id = T3.id WHERE T2.title ILIKE 'Masonry' AND T3.list_name ILIKE 'May 01 05/08/2023'
+==================================================
+
+191)
+==================================================
+🔍 [SQL Generated for User Query]: "give me task details from task group Masonry and from task list name Duplicate 07"
+💻 [Raw SQL]: SELECT T1.title, T1.description, T1.unit, T1.quantity_type, T1.price, T1.price_type FROM task AS T1 INNER JOIN task_group AS T2 ON T1.task_group_id = T2.id INNER JOIN task_and_task_list_name AS T3 ON T1.id = T3.task_id INNER JOIN task_list_name AS T4 ON T3.task_list_name_id = T4.id WHERE T2.title ILIKE 'Masonry' AND T4.list_name ILIKE 'Duplicate 07'
+==================================================
+
+192)
+==================================================
+🔍 [SQL Generated for User Query]: "Give me contact details for this vendor Terracon"
+💻 [Raw SQL]: SELECT vendor.name, vendor.email, vendor.phone_number, vendor.main_number, vendor.fax_number, vendor.cell_number, address.street_address, address.city, address.state, address.zip FROM vendor JOIN address ON vendor.address_id = address.id WHERE vendor.name ILIKE 'Terracon'
+==================================================
+
+193)
+==================================================
+🔍 [SQL Generated for User Query]: "how many project we have"
+💻 [Raw SQL]: SELECT COUNT(id) FROM project
+==================================================
+
+194)
+==================================================
+🔍 [SQL Generated for User Query]: "Show me contact details for vendor Terracon"
+💻 [Raw SQL]: SELECT vendor.id, vendor.name, vendor.email, vendor.phone_number, vendor.contact_type, address.street_address, address.city, address.state, address.zip FROM vendor JOIN address ON vendor.address_id = address.id WHERE vendor.name ILIKE 'Terracon'
+==================================================
+
+195)
+==================================================
+🔍 [SQL Generated for User Query]: "How many open projects do we have?"
+💻 [Raw SQL]: SELECT COUNT(*) FROM project WHERE project_state = 'OPEN'
+==================================================
+
+196)
+==================================================
+🔍 [SQL Generated for User Query]: "Show me contact details for vendor Terracon"
+💻 [Raw SQL]: SELECT vendor.name AS vendor_name, vendor.email, vendor.phone_number, vendor.contact_type, address.street_address, address.city, address.state, address.zip FROM vendor JOIN address ON vendor.address_id = address.id WHERE vendor.name ILIKE 'Terracon'
+==================================================
+
+197)
+==================================================
+🔍 [SQL Generated for User Query]: "how many total projects we have "
+💻 [Raw SQL]: SELECT COUNT(*) AS total_projects FROM project
+==================================================
+
+198)
+==================================================
+🔍 [SQL Generated for User Query]: "Show me contact details for vendor Terracon"
+💻 [Raw SQL]: SELECT vendor.name AS vendor_name, vendor.email, vendor.phone_number, vendor.contact_type, address.street_address, address.city, address.state, address.zip FROM vendor JOIN address ON vendor.address_id = address.id WHERE vendor.name ILIKE 'Terracon'
+==================================================
+
+199)
+==================================================
+🔍 [SQL Generated for User Query]: "how many projects we have"
+💻 [Raw SQL]: SELECT COUNT(*) AS total_projects FROM project
+==================================================
+

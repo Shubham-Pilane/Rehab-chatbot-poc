@@ -11,6 +11,7 @@ const entityService = require('../services/entity.service');
 const contextService = require('../services/context.service');
 const promptService = require('../services/prompt.service');
 const geminiService = require('../services/gemini.service');
+const bedrockService = require('../services/bedrock.service');
 const ragService = require('../services/rag.service');
 const sqlService = require('../services/sql.service');
 const summaryService = require('../services/summary.service');
@@ -164,6 +165,59 @@ class ChatController {
         
         // For other casual queries (like "im feeling sad" or "write a poem"), we skip intent/entity API calls
         console.log(`[Casual Query Detected] Bypassing intent/entity API calls for: "${content}"`);
+      }
+
+      // OPTION A: If Bedrock AgentCore Harness mode is active, let AWS AgentCore Harness orchestrate tools directly
+      if (process.env.USE_BEDROCK === 'true' && process.env.BEDROCK_MODE === 'harness' && bedrockService.isHarnessConfigured()) {
+        try {
+          console.log(`\n🤖 [Option A]: Routing to Bedrock AgentCore Harness for: "${content}"`);
+          const aiResponse = await bedrockService.sendMessage(sessionId, content);
+
+          let suggestedFollowUps = [];
+          let sanitizedResponseText = aiResponse.text;
+
+          const followUpMatch = sanitizedResponseText.match(/\[SUGGESTED_FOLLOW_UPS:\s*(.*?)\]/i);
+          if (followUpMatch) {
+            suggestedFollowUps = followUpMatch[1].split('|').map(q => q.trim()).filter(q => q.length > 0);
+            sanitizedResponseText = sanitizedResponseText.replace(/\[SUGGESTED_FOLLOW_UPS:\s*(.*?)\]/gi, '').trim();
+          }
+
+          const sanitizedResponse = this.sanitizeResponse(sanitizedResponseText);
+          const assistantMessage = await chatMessageRepository.createMessage(sessionId, 'assistant', sanitizedResponse);
+          const latencyMs = Date.now() - startTime;
+
+          await chatAuditRepository.logChatAudit({
+            userId: req.user.id,
+            sessionId,
+            prompt: content,
+            response: sanitizedResponse,
+            intent: 'AGENTCORE_HARNESS',
+            entities: {},
+            model: aiResponse.model,
+            tokensPrompt: aiResponse.tokensPrompt,
+            tokensCompletion: aiResponse.tokensCompletion,
+            tokensTotal: aiResponse.tokensTotal,
+            latencyMs
+          });
+
+          await chatAuditRepository.logAiUsage({
+            userId: req.user.id,
+            modelName: aiResponse.model,
+            action: 'chat',
+            tokensUsed: aiResponse.tokensTotal
+          });
+
+          return res.status(200).json({
+            message: assistantMessage,
+            intent: 'AGENTCORE_HARNESS',
+            entities: {},
+            ragRetrieved: false,
+            latencyMs,
+            suggestedFollowUps
+          });
+        } catch (harnessErr) {
+          console.error('⚠️ Bedrock AgentCore Harness error, falling back to local pipeline:', harnessErr.message);
+        }
       }
 
       let businessData = null;
@@ -512,12 +566,22 @@ class ChatController {
       const systemPrompt = promptService.getSystemPrompt();
       const userPrompt = promptService.buildPrompt(content, businessData, ragChunks, contextText, intent, executedSql);
 
-      // 10. Send to Google Gemini API
-      const geminiResponse = await geminiService.generateChatResponse(systemPrompt, userPrompt);
+      // 10. Send to AI Engine (Amazon Bedrock Nova or Google Gemini)
+      let aiResponse;
+      if (process.env.USE_BEDROCK === 'true' && bedrockService.isConfigured()) {
+        try {
+          aiResponse = await bedrockService.generateChatResponse(systemPrompt, userPrompt);
+        } catch (bedrockErr) {
+          console.warn('⚠️ Bedrock Nova invocation failed, falling back to Gemini:', bedrockErr.message);
+          aiResponse = await geminiService.generateChatResponse(systemPrompt, userPrompt);
+        }
+      } else {
+        aiResponse = await geminiService.generateChatResponse(systemPrompt, userPrompt);
+      }
       
       // 10b. Parse suggested follow-ups if present
       let suggestedFollowUps = [];
-      let sanitizedResponseText = geminiResponse.text;
+      let sanitizedResponseText = aiResponse.text;
       
       const followUpMatch = sanitizedResponseText.match(/\[SUGGESTED_FOLLOW_UPS:\s*(.*?)\]/i);
       if (followUpMatch) {
@@ -542,18 +606,20 @@ class ChatController {
         response: sanitizedResponse,
         intent,
         entities: mergedEntities,
-        model: geminiResponse.model,
-        tokensPrompt: geminiResponse.tokensPrompt,
-        tokensCompletion: geminiResponse.tokensCompletion,
-        tokensTotal: geminiResponse.tokensTotal,
+        model: aiResponse.model,
+        tokensPrompt: aiResponse.tokensPrompt,
+        tokensCompletion: aiResponse.tokensCompletion,
+        tokensTotal: aiResponse.tokensTotal,
         latencyMs
       });
 
+      console.log(`\n🤖 [AI Model Executed]: ${aiResponse.model} (Latency: ${latencyMs}ms, Tokens: ${aiResponse.tokensTotal})\n`);
+
       await chatAuditRepository.logAiUsage({
         userId: req.user.id,
-        modelName: geminiResponse.model,
+        modelName: aiResponse.model,
         action: 'chat',
-        tokensUsed: geminiResponse.tokensTotal
+        tokensUsed: aiResponse.tokensTotal
       });
 
       // 14. Return response to UI along with debugging context

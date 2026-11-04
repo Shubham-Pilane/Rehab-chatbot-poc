@@ -1,4 +1,5 @@
 const geminiService = require('./gemini.service');
+const bedrockService = require('./bedrock.service');
 const fs = require('fs');
 const path = require('path');
 
@@ -531,7 +532,17 @@ Example Output:
       const combinedQuery = contextText
         ? `Conversation History:\n${contextText}\n\nUser's follow-up request (write the SQL query to answer this request based on the context above): ${userQuery}`
         : userQuery;
-      const result = await geminiService.generateJsonResponse(systemPrompt, combinedQuery, 'sql');
+      let result;
+      if (process.env.USE_BEDROCK === 'true' && bedrockService.isConfigured()) {
+        try {
+          result = await bedrockService.generateJsonResponse(systemPrompt, combinedQuery, 'sql');
+        } catch (bedrockErr) {
+          console.warn('⚠️ Bedrock SQL generation failed, falling back to Gemini:', bedrockErr.message);
+          result = await geminiService.generateJsonResponse(systemPrompt, combinedQuery, 'sql');
+        }
+      } else {
+        result = await geminiService.generateJsonResponse(systemPrompt, combinedQuery, 'sql');
+      }
       let sqlQuery = result && result.sql ? result.sql.trim() : '';
 
       // Auto-fix LLM join error: replace tenant_id = brand.id with tenant_id = brand.tenant_id

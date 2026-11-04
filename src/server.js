@@ -5,6 +5,22 @@ if (!global.fetch || !global.Headers) {
   global.Request = fetch.Request;
   global.Response = fetch.Response;
 }
+
+// Polyfill web streams & crypto for Node 16 AWS SDK v3 support
+if (!global.TransformStream) {
+  try {
+    const { TransformStream, ReadableStream, WritableStream } = require('stream/web');
+    global.TransformStream = TransformStream;
+    global.ReadableStream = ReadableStream;
+    global.WritableStream = WritableStream;
+  } catch (e) {}
+}
+if (!global.crypto) {
+  try {
+    global.crypto = require('crypto').webcrypto;
+  } catch (e) {}
+}
+
 require('dotenv').config();
 const app = require('./app');
 const initializeDatabases = require('./config/init-chatbot-db');

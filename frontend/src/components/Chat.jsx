@@ -410,6 +410,19 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
           <Typography variant={compact ? 'subtitle1' : 'h5'} sx={{ color: '#0284c7', fontWeight: 800, letterSpacing: '0.02em' }}>
             REHAB TRACKER AI
           </Typography>
+          <Chip 
+            size="small" 
+            label="Bedrock AgentCore Harness" 
+            sx={{ 
+              height: 20, 
+              fontSize: '0.65rem', 
+              bgcolor: '#ecfdf5', 
+              color: '#065f46', 
+              border: '1px solid #a7f3d0', 
+              fontWeight: 700,
+              ml: 1
+            }} 
+          />
         </Box>
         <Box sx={{ display: 'flex', gap: compact ? 0.5 : 1.5, alignItems: 'center' }}>
           {!compact && (

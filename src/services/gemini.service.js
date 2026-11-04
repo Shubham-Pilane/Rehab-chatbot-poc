@@ -62,6 +62,17 @@ class GeminiService {
 
   async generateChatResponse(systemPrompt, userPrompt, temperature = 0.2) {
     const startTime = Date.now();
+
+    if (process.env.USE_BEDROCK === 'true') {
+      try {
+        const bedrockService = require('./bedrock.service');
+        if (bedrockService.isConfigured()) {
+          return await bedrockService.generateChatResponse(systemPrompt, userPrompt, temperature);
+        }
+      } catch (bErr) {
+        console.warn('⚠️ Bedrock chat failed, falling back to Gemini:', bErr.message);
+      }
+    }
     
     if (!this.isCircuitActive()) {
       const responseText = this.getMockResponse(systemPrompt, userPrompt);
@@ -122,6 +133,17 @@ class GeminiService {
   }
 
   async generateJsonResponse(systemPrompt, userPrompt, schemaName = '') {
+    if (process.env.USE_BEDROCK === 'true') {
+      try {
+        const bedrockService = require('./bedrock.service');
+        if (bedrockService.isConfigured()) {
+          return await bedrockService.generateJsonResponse(systemPrompt, userPrompt, schemaName);
+        }
+      } catch (bErr) {
+        console.warn('⚠️ Bedrock JSON failed, falling back to Gemini:', bErr.message);
+      }
+    }
+
     if (!this.isCircuitActive()) {
       return this.getMockJsonResponse(schemaName, userPrompt);
     }
