@@ -408,8 +408,21 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
             </IconButton>
           </Tooltip>
           <Typography variant={compact ? 'subtitle1' : 'h5'} sx={{ color: '#0284c7', fontWeight: 800, letterSpacing: '0.02em' }}>
-            REHAB TRACKER AI
+            HABI - REHAB TRACKER AI
           </Typography>
+          <Chip 
+            size="small" 
+            label="Google Vertex AI" 
+            sx={{ 
+              height: 20, 
+              fontSize: '0.65rem', 
+              bgcolor: '#eff6ff', 
+              color: '#1e40af', 
+              border: '1px solid #bfdbfe', 
+              fontWeight: 700,
+              ml: 1
+            }} 
+          />
         </Box>
         <Box sx={{ display: 'flex', gap: compact ? 0.5 : 1.5, alignItems: 'center' }}>
           {!compact && (

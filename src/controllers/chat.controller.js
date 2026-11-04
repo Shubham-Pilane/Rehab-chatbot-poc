@@ -136,7 +136,7 @@ class ChatController {
       if (isCasualQuery) {
         // Direct greeting instant response to save API calls
         if (simpleGreetings.includes(cleanContent)) {
-          const greetingResponse = "Hello! I am your friendly AI Repair Project Management Assistant. How can I help you with your projects today?";
+          const greetingResponse = "Hello! I am Habi, your friendly AI Repair Project Management Assistant. How can I help you with your projects today?";
           const botMsg = await chatMessageRepository.createMessage(sessionId, 'assistant', greetingResponse);
           
           await chatAuditRepository.logChatAudit({
