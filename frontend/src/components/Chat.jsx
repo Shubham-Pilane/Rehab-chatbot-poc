@@ -408,7 +408,7 @@ const Chat = ({ user, onLogout, onToggleAdmin, compact = false, onClose }) => {
             </IconButton>
           </Tooltip>
           <Typography variant={compact ? 'subtitle1' : 'h5'} sx={{ color: '#0284c7', fontWeight: 800, letterSpacing: '0.02em' }}>
-            REHAB TRACKER AI
+            HABI - REHAB TRACKER AI
           </Typography>
           <Chip 
             size="small" 

@@ -195,28 +195,33 @@ export default function Dashboard({ user, onLogout, onToggleAdmin }) {
 
       {/* 4. Floating Chatbot Button (Hidden when chat is open) */}
       {!chatOpen && (
-        <Tooltip title="Open Rehab AI Chatbot" placement="left">
+        <Tooltip title="Chat with Habi" placement="left">
           <Fab
+            variant="extended"
             color="primary"
             onClick={() => setChatOpen(true)}
             sx={{
               position: 'fixed',
               bottom: 28,
               right: 28,
-              width: 60,
-              height: 60,
+              height: 54,
+              px: 2.8,
               background: 'linear-gradient(135deg, #00a8e8 0%, #0284c7 100%)',
               color: '#ffffff',
+              fontWeight: 800,
+              fontSize: '1rem',
+              letterSpacing: '0.03em',
               boxShadow: '0 8px 30px rgba(0, 168, 232, 0.45)',
               zIndex: 999999,
               transition: 'all 0.25s ease-in-out',
               '&:hover': {
                 background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-                transform: 'scale(1.08)'
+                transform: 'scale(1.06)'
               }
             }}
           >
-            <ChatIcon sx={{ fontSize: '1.8rem' }} />
+            <ChatIcon sx={{ mr: 1, fontSize: '1.6rem' }} />
+            Habi
           </Fab>
         </Tooltip>
       )}
